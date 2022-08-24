@@ -1,0 +1,119 @@
+-- Query for Descriptive Statistics on Numeric Fields in Customer Table
+
+SELECT 
+	MIN(active) AS min_active,
+	MAX(active) AS max_active,
+	AVG(active) AS avg_active,
+	MIN(address_id) AS min_address,
+	MAX(address_id) AS max_address,
+	AVG(address_id) AS avg_address,
+	MIN(customer_id) AS min_customer,
+	MAX(customer_id) AS max_customer,
+	AVG(customer_id) AS avg_customer,
+	MIN(store_id) AS min_store,
+	MAX(store_id) AS max_store,
+	AVG(store_id) AS avg_store
+FROM customer;
+
+
+-- Query for Descriptive Statistics on Numeric Fields in Film Table
+
+SELECT 
+	MIN(rental_rate) AS min_rental_rate,
+	MAX(rental_rate) AS max_rental_rate,
+	AVG(rental_rate) AS avg_rental_rate,
+	MIN(rental_duration) AS min_rental_duration,
+	MAX(rental_duration) AS max_rental_duration,
+	AVG(rental_duration) AS avg_rental_duration,
+	MIN(replacement_cost) AS min_replacement_cost,
+	MAX(replacement_cost) AS max_replacement_cost,
+	AVG(replacement_cost) AS avg_replacement_cost,
+	MIN(length) AS min_length,
+	MAX(length) AS max_length,
+	AVG(length) AS avg_length
+FROM film;
+
+
+-- Query for Mode on Text Fields in Customer Table
+
+SELECT
+	mode() WITHIN GROUP (ORDER BY first_name) AS first_name_value,
+	mode() WITHIN GROUP (ORDER BY last_name) AS last_name_value,
+	mode() WITHIN GROUP (ORDER BY email) AS email_value,
+	COUNT(*)
+FROM customer;
+
+
+-- Query for Mode on Text Fields in Film Table
+
+SELECT
+	mode() WITHIN GROUP (ORDER BY rating) AS rating_value,
+	mode() WITHIN GROUP (ORDER BY special_features) AS feature_value,
+	mode() WITHIN GROUP (ORDER BY release_year) AS year_value,
+	mode() WITHIN GROUP (ORDER BY title)	AS title_value,
+	COUNT(*) AS count_rows
+FROM film;
+
+
+-- Query to Check for Duplicates in Customer Table
+
+SELECT
+	first_name,
+	last_name,
+	email,
+	address_id,
+	COUNT(*)
+FROM customer
+GROUP BY 
+	first_name,
+	last_name,
+	email,
+	address_id
+HAVING COUNT(*) >1;
+
+
+-- Query to Check for Duplicates in Film Table
+
+SELECT 
+	title,
+	release_year,
+	language_id,  
+	rental_duration,
+	COUNT(*)
+FROM film
+GROUP BY 
+	title,
+	release_year,
+	language_id,
+	rental_duration
+HAVING COUNT(*) >1;
+
+
+-- Query to Check for Missing Values in Customer Table
+
+SELECT
+	COUNT(customer_id),
+	COUNT(store_id),
+	COUNT(first_name),
+	COUNT(last_name),
+	COUNT(email),
+	COUNT(address_id),
+	COUNT(active),
+	COUNT(*) AS count_row
+FROM customer;
+
+
+-- Query to Check for Missing Values in Film Table
+
+SELECT 
+ 	COUNT(film_id),
+	COUNT(title),
+	COUNT(release_year),
+	COUNT(language_id),
+	COUNT(rental_duration),
+	COUNT(rental_rate),
+	COUNT(length),
+	COUNT(rating),
+	COUNT(replacement_cost),
+	COUNT(*) AS count_row
+FROM film;
