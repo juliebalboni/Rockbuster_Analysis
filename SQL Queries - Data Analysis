@@ -1,0 +1,148 @@
+--Query for Count of Movies, Average Rental Rate, and Minimum and Maximum Rental Durations by Rating
+
+SELECT 
+	rating,
+	COUNT (film_id) AS "count_of_movies",
+	AVG (rental_rate) AS "average_rental_rate",
+	MIN (rental_duration) AS "minimum_rental_duration",
+	MAX (rental_duration) AS "maximum_rental_duration"
+FROM film 
+GROUP BY rating
+ORDER BY rating
+
+
+-- Query for Top 10 Movies by Revenue	
+	
+SELECT 
+	A.title, 
+	SUM(D.amount) AS total_payment	
+FROM film A	
+INNER JOIN inventory B ON A.film_id = B.film_id
+INNER JOIN rental C ON B.inventory_id = C.inventory_id
+INNER JOIN payment D On C.rental_id = D. rental_id
+GROUP BY A.title	
+ORDER BY total_payment DESC	
+LIMIT 10;	
+
+
+-- Query for Bottom 10 Movies by Revenue	
+	
+SELECT 
+	A.title, 
+	SUM(D.amount) AS total_payment	
+FROM film A	
+INNER JOIN inventory B ON A.film_id = B.film_id
+INNER JOIN rental C ON B.inventory_id = C.inventory_id
+INNER JOIN payment D On C.rental_id = D. rental_id
+GROUP BY A.title	
+ORDER BY total_payment ASC	
+LIMIT 10;	
+
+
+-- Query for Count of Films by Rating			
+			
+SELECT 
+	A.rating AS rating, 
+	COUNT(A.film_id) AS count_of_films, 
+	SUM(E.amount) AS total_film_revenue			
+FROM film A			
+INNER JOIN film_category B ON A.film_id = B.film_id			
+INNER JOIN category C ON B.category_id = C.category_id			
+INNER JOIN inventory F ON A.film_id = F.film_id			
+INNER JOIN rental D ON F.inventory_id = D.inventory_id			
+INNER JOIN payment E ON D.rental_id = E.rental_id			
+GROUP BY A. rating			
+ORDER BY total_film_revenue DESC;	
+
+
+-- Query for Genre Film Count and Revenue			
+			
+SELECT 
+	C.name AS genre, 
+	COUNT(A.film_id) AS count_of_films, 
+	SUM(E.amount) AS total_film_revenue			
+FROM film A			
+INNER JOIN film_category B ON A.film_id = B.film_id			
+INNER JOIN category C ON B.category_id = C.category_id			
+INNER JOIN inventory F ON A.film_id = F.film_id			
+INNER JOIN rental D ON F.inventory_id = D.inventory_id			
+INNER JOIN payment E ON D.rental_id = E.rental_id			
+GROUP BY C.name			
+ORDER BY total_film_revenue DESC;	
+
+
+-- Query for Top 10 Countries by Customer Count
+
+SELECT 
+	D.country,
+	COUNT(A.customer_id) AS customer_count
+FROM customer A
+INNER JOIN address B ON A.address_id = B.address_id
+INNER JOIN city C ON B.city_id = C.city_id
+INNER JOIN country D ON C.country_id = D.country_id
+GROUP BY country
+ORDER BY customer_count DESC
+LIMIT 10;
+
+
+-- Query for Top 10 Cities within Top 10 Countries by Customer Count				
+	
+SELECT 	
+	C.city,			
+	D.country,			
+	COUNT(A.customer_id) AS customer_count			
+FROM customer A				
+INNER JOIN address B ON A.address_id = B.address_id				
+INNER JOIN city C ON B.city_id = C.city_id				
+INNER JOIN country D ON C.country_id = D.country_id				
+WHERE country IN('India', 'China', 'United States', 'Japan', 'Mexico', 'Brazil', 'Russian Federation', 'Phillipines', 'Turkey', 'Indonesia')
+GROUP BY 
+	city,				
+	country			
+ORDER BY customer_count DESC				
+LIMIT 10;				  
+
+
+--Query for Top 5 Customers by Revenue in Top 10 Cities by Customer Count			
+
+SELECT 
+	A. customer_id, 
+	A.first_name, 
+	A.last_name, 
+	C.city, 
+	D.country,	
+	SUM (E. amount) AS total_amount_paid			
+FROM customer A			
+INNER JOIN address B ON A.address_id = B.address_id			
+INNER JOIN city C ON B.city_id = C.city_id			
+INNER JOIN country D ON C.country_ID = D.country_ID			
+INNER JOIN payment E ON A.customer_id = E.customer_id			
+WHERE city IN ('Aurora', 'Atlixco', 'xintai', 'Adoni', 'Dhule (Dhulia)', 'Kurashiki', 'Pingxiang', 'Sivas', 'Celaya', 'So Leopoldo')
+GROUP BY 
+	A.customer_id, 
+	C.city, 
+	D. country			
+ORDER BY total_amount_paid DESC			
+LIMIT 5;
+
+
+-- Query for Top 10 Customers by Revenue
+
+SELECT 
+	A. customer_id, 
+	A.first_name, 
+	A.last_name, 
+	C.city, 
+	D.country,
+	SUM (E. amount) AS total_amount_paid
+FROM customer A
+INNER JOIN address B ON A.address_id = B.address_id
+INNER JOIN city C ON B.city_id = C.city_id
+INNER JOIN country D ON C.country_ID = D.country_ID
+INNER JOIN payment E ON A.customer_id = E.customer_id
+GROUP BY 
+	A.customer_id, 
+	C.city, 
+	D. country
+ORDER BY total_amount_paid DESC
+LIMIT 10;
